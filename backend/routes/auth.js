@@ -46,6 +46,48 @@ const mysqlAuth = {
   async updatePassword(id, newPassword) {
     const hashed = await bcrypt.hash(newPassword, 12);
     await db.query('UPDATE users SET password = ? WHERE id = ?', [hashed, id]);
+  },
+  async updateUser(id, { name, email, role }) {
+    const fields = [];
+    const values = [];
+    if (name) { fields.push('name = ?'); values.push(name); }
+    if (email) { fields.push('email = ?'); values.push(email); }
+    
+    // Handle role/isAdmin
+    if (role) {
+      // Try to update role column if it exists
+      try {
+        const [columns] = await db.query("SHOW COLUMNS FROM users LIKE 'role'");
+        if (columns.length > 0) {
+          fields.push('role = ?');
+          values.push(role);
+        }
+      } catch (e) {
+        // Ignore error
+      }
+
+      // Sync isAdmin based on role
+      fields.push('isAdmin = ?');
+      values.push(role === 'admin' ? 1 : 0);
+    }
+
+    if (!fields.length) return await this.findUserById(id);
+    
+    values.push(id);
+    await db.query(`UPDATE users SET ${fields.join(', ')} WHERE id = ?`, values);
+    
+    // Return updated user
+    const user = await this.findUserById(id);
+    // Attach role if it exists
+    try {
+      const [columns] = await db.query("SHOW COLUMNS FROM users LIKE 'role'");
+      if (columns.length > 0) {
+        const [rows] = await db.query('SELECT role FROM users WHERE id = ?', [id]);
+        if (rows[0]) user.role = rows[0].role;
+      }
+    } catch (e) {}
+    
+    return user;
   }
 };
 
@@ -237,10 +279,29 @@ router.put('/update-profile', protect, uploadAvatar.single('avatar'), handleUplo
       });
     }
 
+    let avatarPath;
+    if (req.file) {
+      if (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloudinary_cloud_name' || !process.env.CLOUDINARY_CLOUD_NAME) {
+        // Local storage: convert absolute path to relative URL
+        const absolutePath = req.file.path;
+        // Extract just the uploads/... part
+        // We assume the path contains 'uploads'
+        const relativePath = absolutePath.split('uploads').pop();
+        avatarPath = 'uploads' + relativePath.replace(/\\/g, '/');
+        
+        // Ensure it starts with a slash if needed, but usually 'uploads/...' is fine if we prepend base URL on frontend
+        // or if we serve it from root.
+        // server.js serves '/uploads', so 'uploads/avatars/...' -> 'http://localhost:5000/uploads/avatars/...'
+        // If we save 'uploads/avatars/...' in DB.
+      } else {
+        avatarPath = req.file.path;
+      }
+    }
+
     const updated = await mysqlAuth.updateProfile(req.user.id, {
       name: req.body.name,
       email: req.body.email,
-      avatar: req.file ? req.file.path : undefined
+      avatar: avatarPath
     });
 
     return res.status(200).json({
@@ -424,6 +485,35 @@ router.delete('/users/:id', protect, async (req, res) => {
     });
   } catch (error) {
     console.error('Delete user error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+});
+
+// @desc    Update user (Admin only)
+// @route   PUT /api/auth/users/:id
+// @access  Private/Admin
+router.put('/users/:id', protect, async (req, res) => {
+  if (!req.user.isAdmin) {
+    return res.status(403).json({ success: false, message: 'Not authorized' });
+  }
+  try {
+    const userId = req.params.id;
+    const { name, email, role } = req.body;
+
+    // Prevent removing your own admin status (optional safety)
+    if (parseInt(userId) === req.user.id && role !== 'admin') {
+       return res.status(400).json({ success: false, message: 'Cannot remove your own admin status' });
+    }
+
+    const updatedUser = await mysqlAuth.updateUser(userId, { name, email, role });
+
+    res.status(200).json({
+      success: true,
+      message: 'User updated successfully',
+      user: updatedUser
+    });
+  } catch (error) {
+    console.error('Update user error:', error);
     res.status(500).json({ success: false, message: 'Server error' });
   }
 });

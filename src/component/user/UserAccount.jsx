@@ -21,7 +21,7 @@ const UserAccount = () => {
     return <PageLoader />;
   }
   return (
-    <div className="min-h-screen w-full bg-gray-200 font-primary dark:bg-bodyColor">
+    <div className="w-full font-primary">
       <h1 className=" pt-8 text-center text-xl font-bold capitalize text-emerald-500 dark:text-white sm:text-3xl">
         account settings
       </h1>

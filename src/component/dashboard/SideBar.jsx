@@ -4,11 +4,15 @@ import { Link, useLocation } from "react-router-dom";
 import UserSvg from "../../ui/UserSvg";
 import BlogBookSvg from "../../ui/BlogBookSvg";
 import WebsiteSvg from "../../ui/WebsiteSvg";
+import SettingsIcon from "../../ui/SettingsIcon";
 import { useLogout } from "../logout/useLogout";
 
 const SideBar = () => {
   const location = useLocation();
   const { logout, isPending } = useLogout();
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(
+    location.pathname.includes("/dashboard/settings")
+  );
 
   return (
     <aside className="flex flex-col px-6 py-3 text-slate-300 ">
@@ -48,9 +52,86 @@ const SideBar = () => {
           <UserSvg />
           <span>manage users</span>
         </Link>
+        {/* Settings Dropdown */}
+        <div className="flex flex-col gap-2">
+          <button
+            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
+            className={` ${
+              location.pathname.includes("/dashboard/settings")
+                ? "bg-primary"
+                : "bg-[#333A48]"
+            } flex min-h-[3rem] w-full cursor-pointer items-center justify-between gap-2 rounded-md px-6 font-medium capitalize transition-all duration-200 hover:bg-primary `}
+          >
+            <div className="flex items-center gap-2">
+              <SettingsIcon />
+              <span>settings</span>
+            </div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              className={`h-4 w-4 transition-transform duration-200 ${
+                isSettingsOpen ? "rotate-180" : ""
+              }`}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+              />
+            </svg>
+          </button>
+          
+          {/* Sub-menu */}
+          <div
+            className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ${
+              isSettingsOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+            }`}
+          >
+            <Link
+              className={` ${
+                location.pathname === "/dashboard/settings/profile"
+                  ? "text-primary"
+                  : "text-slate-400"
+              } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
+              to={"/dashboard/settings/profile"}
+            >
+              <UserSvg />
+              <span>Profile</span>
+            </Link>
+            <Link
+              className={` ${
+                location.pathname === "/dashboard/settings/password"
+                  ? "text-primary"
+                  : "text-slate-400"
+              } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
+              to={"/dashboard/settings/password"}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                stroke="currentColor"
+                className="h-5 w-5"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                />
+              </svg>
+              <span>Password</span>
+            </Link>
+          </div>
+        </div>
         <Link
           className={` ${location.pathname === "/" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
           to={"/"}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           <WebsiteSvg />
           <span>visite website</span>

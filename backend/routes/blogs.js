@@ -1,6 +1,6 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
-const { protect, isAdmin } = require('../middleware/auth');
+const { protect, isAdmin, canManageBlogs } = require('../middleware/auth');
 const { uploadBlog, handleUploadError } = require('../middleware/upload');
 const db = require('../config/db');
 
@@ -67,7 +67,7 @@ router.get('/', async (req, res) => {
 // @desc    Create new blog
 // @route   POST /api/blogs
 // @access  Private (Admin only)
-router.post('/', protect, isAdmin, uploadBlog, handleUploadError, [
+router.post('/', protect, canManageBlogs, uploadBlog, handleUploadError, [
   body('title')
     .trim()
     .isLength({ min: 2, max: 200 })
@@ -201,7 +201,7 @@ router.post('/', protect, isAdmin, uploadBlog, handleUploadError, [
 // @desc    Bulk update blogs (publish/draft)
 // @route   PUT /api/blogs/bulk-update
 // @access  Private (Admin only)
-router.put('/bulk-update', protect, isAdmin, async (req, res) => {
+router.put('/bulk-update', protect, canManageBlogs, async (req, res) => {
   try {
     const { blogIds, isPublished } = req.body;
 
@@ -243,7 +243,7 @@ router.put('/bulk-update', protect, isAdmin, async (req, res) => {
 // @desc    Update blog
 // @route   PUT /api/blogs/:id
 // @access  Private (Admin only)
-router.put('/:id', protect, isAdmin, uploadBlog, handleUploadError, [
+router.put('/:id', protect, canManageBlogs, uploadBlog, handleUploadError, [
   body('title')
     .optional({ checkFalsy: true })
     .trim()
@@ -412,7 +412,7 @@ router.put('/:id', protect, isAdmin, uploadBlog, handleUploadError, [
 // @desc    Delete blog
 // @route   DELETE /api/blogs/:id
 // @access  Private (Admin only)
-router.delete('/:id', protect, isAdmin, async (req, res) => {
+router.delete('/:id', protect, canManageBlogs, async (req, res) => {
   try {
     const result = await db.query('DELETE FROM blogs WHERE id = ?', [req.params.id]);
     

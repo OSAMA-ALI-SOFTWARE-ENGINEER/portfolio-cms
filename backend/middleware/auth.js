@@ -27,7 +27,15 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       
-      const sql = 'SELECT id, name, email, avatar, isAdmin FROM users WHERE id = ?';
+      // Try to fetch role if it exists
+      let sql = 'SELECT id, name, email, avatar, isAdmin FROM users WHERE id = ?';
+      try {
+         const [columns] = await db.query("SHOW COLUMNS FROM users LIKE 'role'");
+         if (columns.length > 0) {
+           sql = 'SELECT id, name, email, avatar, isAdmin, role FROM users WHERE id = ?';
+         }
+      } catch (e) {}
+
       const rows = await db.query(sql, [decoded.id]);
       const user = rows[0];
 
@@ -43,7 +51,8 @@ const protect = async (req, res, next) => {
         name: user.name,
         email: user.email,
         avatar: user.avatar,
-        isAdmin: !!user.isAdmin
+        isAdmin: !!user.isAdmin,
+        role: user.role || (user.isAdmin ? 'admin' : 'user')
       };
       return next();
     } catch (error) {
@@ -84,8 +93,20 @@ const isAdmin = (req, res, next) => {
   next();
 };
 
+// Check if user can manage blogs (Admin or Editor)
+const canManageBlogs = (req, res, next) => {
+  if (req.user.isAdmin || req.user.role === 'editor') {
+    return next();
+  }
+  return res.status(403).json({
+    success: false,
+    message: 'Access denied. Admin or Editor privileges required.'
+  });
+};
+
 module.exports = {
   protect,
   authorize,
-  isAdmin
+  isAdmin,
+  canManageBlogs
 };

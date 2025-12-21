@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../authentication/useCurrentUser";
+import { getImageUrl } from "../../helper/imageHelper";
 
 const AdminInfo = () => {
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const { user } = useCurrentUser();
   let avatar = user?.avatar || user?.user_metadata?.avatar;
-  if (!avatar || avatar.includes("via.placeholder.com")) {
+  
+  if (avatar && !avatar.includes("via.placeholder.com")) {
+    avatar = getImageUrl(avatar);
+  } else {
     avatar = "/images.png";
   }
 
@@ -58,7 +62,7 @@ const AdminInfo = () => {
         <div className="py-1">
           {/* Settings */}
           <button
-            onClick={() => handleOptionClick("/me")}
+            onClick={() => handleOptionClick("/dashboard/settings/profile")}
             className="group flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition-all duration-200 hover:bg-primary/10 hover:text-primary dark:text-gray-300 dark:hover:bg-primary/20"
           >
             <svg
@@ -85,7 +89,7 @@ const AdminInfo = () => {
 
           {/* Profile Details */}
           <button
-            onClick={() => handleOptionClick("/me")}
+            onClick={() => handleOptionClick("/dashboard/settings/profile")}
             className="group flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition-all duration-200 hover:bg-primary/10 hover:text-primary dark:text-gray-300 dark:hover:bg-primary/20"
           >
             <svg
@@ -107,7 +111,7 @@ const AdminInfo = () => {
 
           {/* Account Details */}
           <button
-            onClick={() => handleOptionClick("/me")}
+            onClick={() => handleOptionClick("/dashboard/settings/password")}
             className="group flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 transition-all duration-200 hover:bg-primary/10 hover:text-primary dark:text-gray-300 dark:hover:bg-primary/20"
           >
             <svg

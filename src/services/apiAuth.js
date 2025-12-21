@@ -129,3 +129,11 @@ export async function forgotPassword(email) {
   console.log('Forgot password functionality needs to be implemented in backend');
   throw new Error('Forgot password not yet implemented');
 }
+
+export async function updateAdminUserApi(id, data) {
+  const response = await apiRequest(`/auth/users/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(data),
+  });
+  return response.user;
+}

@@ -4,12 +4,16 @@ import { useDeleteUser } from "../user/useDeleteUser";
 import { dateFormatter } from "../../helper/DateFormatter";
 import DashboardLoader from "./DashboardLoader";
 import Error from "../../ui/Error";
+import EditSvg from "../../ui/EditSvg";
 import DeleteSvg from "../../ui/DeleteSvg";
+import EditUserModal from "./EditUserModal";
+import { getImageUrl } from "../../helper/imageHelper";
 
 const UserManagement = () => {
   const { users, isLoading, isError } = useUsers();
   const { deleteUser, isDeleting } = useDeleteUser();
   const [isMenuOpen, setIsMenuOpen] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
 
   const handleMenuToggle = (index) => {
     setIsMenuOpen(isMenuOpen === index ? null : index);
@@ -20,6 +24,11 @@ const UserManagement = () => {
       deleteUser(id);
       setIsMenuOpen(null);
     }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setIsMenuOpen(null);
   };
 
   if (isLoading) return <DashboardLoader />;
@@ -54,7 +63,7 @@ const UserManagement = () => {
                         <img
                           src={
                             user.avatar && !user.avatar.includes("via.placeholder.com")
-                              ? user.avatar
+                              ? getImageUrl(user.avatar)
                               : "https://ui-avatars.com/api/?name=" + user.name
                           }
                           alt={user.name}
@@ -71,8 +80,8 @@ const UserManagement = () => {
                 </td>
                 <td>{user.email}</td>
                 <td>
-                  <span className={`badge ${user.isAdmin ? "badge-primary" : "badge-ghost"}`}>
-                    {user.isAdmin ? "Admin" : "User"}
+                  <span className={`badge ${user.isAdmin ? "badge-primary" : (user.role === 'editor' ? "badge-secondary" : "badge-ghost")}`}>
+                    {user.isAdmin ? "Admin" : (user.role === 'editor' ? "Editor" : "User")}
                   </span>
                 </td>
                 <td>{dateFormatter(user.createdAt)}</td>
@@ -101,7 +110,16 @@ const UserManagement = () => {
                       <ul>
                         <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
                           <button
-                            disabled={isDeleting || user.isAdmin} // Prevent deleting admins for safety, or at least yourself (handled by backend)
+                            className="flex items-center gap-2"
+                            onClick={() => handleEdit(user)}
+                          >
+                            <EditSvg />
+                            <span>Edit</span>
+                          </button>
+                        </li>
+                        <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
+                          <button
+                            disabled={isDeleting || user.isAdmin} // Prevent deleting admins for safety
                             className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
                             onClick={() => handleDelete(user.id)}
                           >
@@ -118,6 +136,13 @@ const UserManagement = () => {
           </tbody>
         </table>
       </div>
+      {editingUser && (
+        <EditUserModal
+          user={editingUser}
+          isOpen={!!editingUser}
+          onClose={() => setEditingUser(null)}
+        />
+      )}
     </div>
   );
 };

@@ -20,6 +20,8 @@ import DetailBlog from "./component/blog/DetailBlog";
 import { ModalProvider } from "./context/ModalContext";
 import BlogManagement from "./component/dashboard/BlogManagement";
 import UserManagement from "./component/dashboard/UserManagement";
+import SettingsProfile from "./component/dashboard/SettingsProfile";
+import SettingsPassword from "./component/dashboard/SettingsPassword";
 import DashboardHome from "./component/dashboard/DashboardHome";
 import Header from "./ui/Header";
 import Footer from "./pages/Footer";
@@ -86,6 +88,8 @@ function App() {
                   <Route index element={<DashboardHome />} />
                   <Route path="manage-blogs" element={<BlogManagement />} />
                   <Route path="manage-users" element={<UserManagement />} />
+                  <Route path="settings/profile" element={<SettingsProfile />} />
+                  <Route path="settings/password" element={<SettingsPassword />} />
                 </Route>
                 <Route index element={<Home />} />
                 <Route path="features" element={<Features />} />
@@ -121,3 +125,4 @@ function App() {
   );
 }
 export default App;
+// End of App component
