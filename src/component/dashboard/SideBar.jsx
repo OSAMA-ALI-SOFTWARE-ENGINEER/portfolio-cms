@@ -52,6 +52,26 @@ const SideBar = () => {
           <UserSvg />
           <span>manage users</span>
         </Link>
+        <Link
+          className={` ${location.pathname === "/dashboard/manage-certificates" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          to={"/dashboard/manage-certificates"}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            className="h-6 w-6"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M16.5 3.75V16.5L12 14.25 7.5 16.5V3.75m9 0H18A2.25 2.25 0 0120.25 6v12A2.25 2.25 0 0118 20.25H6A2.25 2.25 0 013.75 18V6A2.25 2.25 0 016 3.75h1.5m9 0h-9"
+            />
+          </svg>
+          <span>Certificates</span>
+        </Link>
         {/* Settings Dropdown */}
         <div className="flex flex-col gap-2">
           <button

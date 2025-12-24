@@ -14,6 +14,7 @@ const authRoutes = require('./routes/auth');
 const blogRoutes = require('./routes/blogs');
 const visitorRoutes = require('./routes/visitors');
 const contactRoutes = require('./routes/contact');
+const certificateRoutes = require('./routes/certificates');
 
 const app = express();
 
@@ -73,6 +74,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/visitors', visitorRoutes);
 app.use('/api/contact', contactRoutes);
+app.use('/api/certificates', certificateRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

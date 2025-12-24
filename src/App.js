@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import Education from "./component/resume/Education";
 import Skills from "./component/resume/Skills";
 import Experience from "./component/resume/Experience";
+import Certificates from "./component/resume/Certificates";
 import ResumeHome from "./component/resume/ResumeHome";
 import PageLoader from "./ui/PageLoader";
 import Login from "./pages/Login";
@@ -20,6 +21,7 @@ import DetailBlog from "./component/blog/DetailBlog";
 import { ModalProvider } from "./context/ModalContext";
 import BlogManagement from "./component/dashboard/BlogManagement";
 import UserManagement from "./component/dashboard/UserManagement";
+import CertificateManagement from "./component/dashboard/CertificateManagement";
 import SettingsProfile from "./component/dashboard/SettingsProfile";
 import SettingsPassword from "./component/dashboard/SettingsPassword";
 import DashboardHome from "./component/dashboard/DashboardHome";
@@ -88,6 +90,7 @@ function App() {
                   <Route index element={<DashboardHome />} />
                   <Route path="manage-blogs" element={<BlogManagement />} />
                   <Route path="manage-users" element={<UserManagement />} />
+                  <Route path="manage-certificates" element={<CertificateManagement />} />
                   <Route path="settings/profile" element={<SettingsProfile />} />
                   <Route path="settings/password" element={<SettingsPassword />} />
                 </Route>
@@ -98,6 +101,7 @@ function App() {
                   <Route path="education" element={<Education />} />
                   <Route path="skills" element={<Skills />} />
                   <Route path="experience" element={<Experience />} />
+                  <Route path="certificates" element={<Certificates />} />
                 </Route>
                 <Route path="blog" element={<Blog />} />
                 <Route path="blog/:blogId" element={<DetailBlog />} />

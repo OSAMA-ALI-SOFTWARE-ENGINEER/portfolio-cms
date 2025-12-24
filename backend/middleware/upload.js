@@ -71,10 +71,10 @@ const avatarStorage = new CloudinaryStorage({
 // File filter function
 const fileFilter = (req, file, cb) => {
   // Check file type
-  if (file.mimetype.startsWith('image/')) {
+  if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
     cb(null, true);
   } else {
-    cb(new Error('Only image files are allowed!'), false);
+    cb(new Error('Only image and PDF files are allowed!'), false);
   }
 };
 
@@ -83,7 +83,13 @@ const uploadBlog = multer({
   storage: (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloudinary_cloud_name' || !process.env.CLOUDINARY_CLOUD_NAME) 
     ? localBlogStorage // Use local disk storage
     : blogImageStorage, // Use Cloudinary
-  fileFilter: fileFilter,
+  fileFilter: (req, file, cb) => {
+     if (file.mimetype.startsWith('image/')) {
+       cb(null, true);
+     } else {
+       cb(new Error('Only image files are allowed for blogs!'), false);
+     }
+  },
   limits: {
     fileSize: 5 * 1024 * 1024 // 5MB limit per file
   }
@@ -97,11 +103,59 @@ const uploadAvatar = multer({
   storage: (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloudinary_cloud_name' || !process.env.CLOUDINARY_CLOUD_NAME)
     ? localAvatarStorage // Use local disk storage
     : avatarStorage, // Use Cloudinary
-  fileFilter: fileFilter,
+  fileFilter: (req, file, cb) => {
+     if (file.mimetype.startsWith('image/')) {
+       cb(null, true);
+     } else {
+       cb(new Error('Only image files are allowed for avatars!'), false);
+     }
+  },
   limits: {
     fileSize: 2 * 1024 * 1024 // 2MB limit
   }
 });
+
+// Local disk storage configuration for certificates
+const certificatesDir = path.join(uploadsDir, 'certificates');
+if (!fs.existsSync(certificatesDir)) {
+  fs.mkdirSync(certificatesDir, { recursive: true });
+}
+
+const localCertificateStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, certificatesDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'cert-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+
+// Storage configuration for certificates (Cloudinary)
+const certificateStorage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: async (req, file) => {
+    return {
+      folder: 'portfolio/certificates',
+      resource_type: 'auto', // Auto detect for PDF/Image
+      allowed_formats: ['jpg', 'jpeg', 'png', 'pdf'],
+    };
+  }
+});
+
+// Multer configuration for certificates
+const uploadCertificate = multer({
+  storage: (process.env.CLOUDINARY_CLOUD_NAME === 'your_cloudinary_cloud_name' || !process.env.CLOUDINARY_CLOUD_NAME)
+    ? localCertificateStorage
+    : certificateStorage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit (PDFs can be larger)
+  }
+}).fields([
+  { name: 'image', maxCount: 1 },
+  { name: 'pdf', maxCount: 1 }
+]);
 
 // Error handling middleware for multer
 const handleUploadError = (error, req, res, next) => {
@@ -133,5 +187,6 @@ const handleUploadError = (error, req, res, next) => {
 module.exports = {
   uploadBlog,
   uploadAvatar,
+  uploadCertificate,
   handleUploadError
 };
