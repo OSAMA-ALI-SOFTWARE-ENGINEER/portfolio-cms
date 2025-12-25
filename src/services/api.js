@@ -10,7 +10,7 @@ const getAuthToken = () => {
 const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = getAuthToken();
-  
+
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -22,7 +22,7 @@ const apiRequest = async (endpoint, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    
+
     // Check if response is ok before trying to parse JSON
     let data;
     try {
@@ -56,9 +56,11 @@ const apiRequest = async (endpoint, options = {}) => {
       console.error('💡 Make sure to start the backend server: cd backend && npm run dev');
       throw friendlyError;
     }
-    
+
     // Handle other errors
-    console.error('API Request Error:', error);
+    if (error.status !== 401) {
+      console.error('API Request Error:', error);
+    }
     throw error;
   }
 };
@@ -67,7 +69,7 @@ const apiRequest = async (endpoint, options = {}) => {
 const apiFormRequest = async (endpoint, formData, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
   const token = getAuthToken();
-  
+
   const config = {
     method: 'POST',
     headers: {
@@ -80,7 +82,7 @@ const apiFormRequest = async (endpoint, formData, options = {}) => {
 
   try {
     const response = await fetch(url, config);
-    
+
     // Check if response is ok before trying to parse JSON
     let data;
     try {
@@ -114,9 +116,11 @@ const apiFormRequest = async (endpoint, formData, options = {}) => {
       console.error('💡 Make sure to start the backend server: cd backend && npm run dev');
       throw friendlyError;
     }
-    
+
     // Handle other errors
-    console.error('API Form Request Error:', error);
+    if (error.status !== 401) {
+      console.error('API Form Request Error:', error);
+    }
     throw error;
   }
 };
