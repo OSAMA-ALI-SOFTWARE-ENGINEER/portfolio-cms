@@ -1,8 +1,7 @@
 import React, { useEffect } from "react";
-import { motion } from "framer-motion";
 import ContactImage from "../component/contactData/ContactImage";
 import ContactForm from "../component/contactData/ContactForm";
-import { pageTransitionVariants } from "../animation variants/pageTransitionVariants";
+import PageTransition from "../ui/PageTransition";
 import { useUpdateVisitor } from "../component/visitor/useUpdateVisitor";
 
 const Contacts = () => {
@@ -11,12 +10,8 @@ const Contacts = () => {
     updateVisitors("/contacts");
   }, [updateVisitors]);
   return (
-    <motion.div
+    <PageTransition
       className=" min-h-screen bg-gray-200 pb-20 font-primary dark:bg-bodyColor sm:p-8"
-      variants={pageTransitionVariants}
-      initial="hidden"
-      animate="visible"
-      exit="exit"
     >
       <div className=" my-b py-10 text-center">
         <p className=" text-lg uppercase text-designColor ">contact</p>
@@ -29,7 +24,7 @@ const Contacts = () => {
         <ContactImage />
         <ContactForm />
       </div>
-    </motion.div>
+    </PageTransition>
   );
 };
 

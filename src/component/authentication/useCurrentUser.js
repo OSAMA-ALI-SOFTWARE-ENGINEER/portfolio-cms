@@ -6,15 +6,15 @@ export function useCurrentUser() {
     queryFn: getCurrentUser,
     queryKey: ["user"],
     retry: false, // Don't retry on auth errors
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 0, // Always fetch fresh data to avoid weird cache persistence issues
     // Don't throw errors if backend is not available - just return null user
     throwOnError: false,
   });
 
-  return { 
-    user, 
-    isLoading, 
+  return {
+    user,
+    isLoading,
     isAuthenticated: !!user && !error,
-    error 
+    error
   };
 }

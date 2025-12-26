@@ -6,8 +6,8 @@ import { useLogout } from "../logout/useLogout";
 const Auth = () => {
   const { logout, isPending } = useLogout();
   const { user, isLoading, isAuthenticated } = useCurrentUser();
-  const name = user?.user_metadata?.name;
-  const avatar = user?.user_metadata?.avatar;
+  const name = user?.name || user?.user_metadata?.name;
+  const avatar = user?.avatar || user?.user_metadata?.avatar;
 
   if (isLoading)
     return (

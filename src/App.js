@@ -20,6 +20,7 @@ import RecoverPassword from "./component/forgotPassword/RecoverPassword";
 import DetailBlog from "./component/blog/DetailBlog";
 import { ModalProvider } from "./context/ModalContext";
 import BlogManagement from "./component/dashboard/BlogManagement";
+import CommentManagement from "./component/dashboard/CommentManagement";
 import UserManagement from "./component/dashboard/UserManagement";
 import CertificateManagement from "./component/dashboard/CertificateManagement";
 import SettingsProfile from "./component/dashboard/SettingsProfile";
@@ -89,6 +90,7 @@ function App() {
                 <Route path="dashboard" element={<Dashboard />}>
                   <Route index element={<DashboardHome />} />
                   <Route path="manage-blogs" element={<BlogManagement />} />
+                  <Route path="manage-comments" element={<CommentManagement />} />
                   <Route path="manage-users" element={<UserManagement />} />
                   <Route path="manage-certificates" element={<CertificateManagement />} />
                   <Route path="settings/profile" element={<SettingsProfile />} />

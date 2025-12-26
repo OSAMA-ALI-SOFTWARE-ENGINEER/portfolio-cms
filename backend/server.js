@@ -15,6 +15,7 @@ const blogRoutes = require('./routes/blogs');
 const visitorRoutes = require('./routes/visitors');
 const contactRoutes = require('./routes/contact');
 const certificateRoutes = require('./routes/certificates');
+const commentRoutes = require('./routes/comments');
 
 const app = express();
 
@@ -43,8 +44,8 @@ app.use('/uploads', express.static('uploads', {
 
 // CORS configuration for API routes
 app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://yourdomain.com'] 
+  origin: process.env.NODE_ENV === 'production'
+    ? ['https://yourdomain.com']
     : ['http://localhost:3000'],
   credentials: true
 }));
@@ -75,11 +76,12 @@ app.use('/api/blogs', blogRoutes);
 app.use('/api/visitors', visitorRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/certificates', certificateRoutes);
+app.use('/api/comments', commentRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'OK', 
+  res.status(200).json({
+    status: 'OK',
     message: 'Portfolio API is running',
     timestamp: new Date().toISOString()
   });
@@ -88,8 +90,8 @@ app.get('/api/health', (req, res) => {
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ 
-    success: false, 
+  res.status(500).json({
+    success: false,
     message: 'Something went wrong!',
     error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
   });
@@ -97,9 +99,9 @@ app.use((err, req, res, next) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ 
-    success: false, 
-    message: 'Route not found' 
+  res.status(404).json({
+    success: false,
+    message: 'Route not found'
   });
 });
 

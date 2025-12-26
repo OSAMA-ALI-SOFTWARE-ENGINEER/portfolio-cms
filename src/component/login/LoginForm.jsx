@@ -5,7 +5,7 @@ import { useLogin } from "./useLogin";
 import { Link, useNavigate } from "react-router-dom";
 import { useCurrentUser } from "../authentication/useCurrentUser";
 import SubPageLoader from "../../ui/SubPageLoader";
-import toast from "react-hot-toast";
+
 import PasswordToggle from "../../ui/PasswordToggle";
 import { motion } from "framer-motion";
 
@@ -28,9 +28,9 @@ const LoginForm = () => {
   const passwordValue = watch("password");
 
   // Real-time email validation
-  const isEmailValid = 
-    emailValue && 
-    !errors.email && 
+  const isEmailValid =
+    emailValue &&
+    !errors.email &&
     /\S+@\S+\.\S+/.test(emailValue);
 
   // Real-time password validation
@@ -69,8 +69,8 @@ const LoginForm = () => {
         Login to your account
       </h2>
 
-      <FormRow 
-        lable="email" 
+      <FormRow
+        lable="email"
         error={errors?.email?.message}
         isValid={isEmailValid}
       >
@@ -78,13 +78,12 @@ const LoginForm = () => {
           type="email"
           placeholder="Enter your email"
           autoComplete="email"
-          className={`h-12 w-full rounded-lg border bg-white p-4 pr-12 text-gray-700 shadow-sm outline-none transition-all duration-200 focus:ring-2 dark:bg-[#1a1d23] dark:text-lightText dark:placeholder:text-gray-500 ${
-            errors?.email?.message
+          className={`h-12 w-full rounded-lg border bg-white p-4 pr-12 text-gray-700 shadow-sm outline-none transition-all duration-200 focus:ring-2 dark:bg-[#1a1d23] dark:text-lightText dark:placeholder:text-gray-500 ${errors?.email?.message
               ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
               : isEmailValid
-              ? "border-green-400 focus:border-green-400 focus:ring-green-400/20"
-              : "border-gray-300 focus:border-sky-500 focus:ring-sky-500/20 dark:border-gray-600"
-          }`}
+                ? "border-green-400 focus:border-green-400 focus:ring-green-400/20"
+                : "border-gray-300 focus:border-sky-500 focus:ring-sky-500/20 dark:border-gray-600"
+            }`}
           {...register("email", {
             required: "Email is required",
             pattern: {
@@ -102,8 +101,8 @@ const LoginForm = () => {
         />
       </FormRow>
 
-      <FormRow 
-        lable="password" 
+      <FormRow
+        lable="password"
         error={errors?.password?.message}
         isValid={isPasswordValid}
       >
@@ -112,13 +111,12 @@ const LoginForm = () => {
             type={showPassword ? "text" : "password"}
             placeholder="Enter your password"
             autoComplete="current-password"
-            className={`h-12 w-full rounded-lg border bg-white p-4 pr-12 text-gray-700 shadow-sm outline-none transition-all duration-200 focus:ring-2 dark:bg-[#1a1d23] dark:text-lightText dark:placeholder:text-gray-500 ${
-              errors?.password?.message
+            className={`h-12 w-full rounded-lg border bg-white p-4 pr-12 text-gray-700 shadow-sm outline-none transition-all duration-200 focus:ring-2 dark:bg-[#1a1d23] dark:text-lightText dark:placeholder:text-gray-500 ${errors?.password?.message
                 ? "border-red-400 focus:border-red-400 focus:ring-red-400/20"
                 : isPasswordValid
-                ? "border-green-400 focus:border-green-400 focus:ring-green-400/20"
-                : "border-gray-300 focus:border-sky-500 focus:ring-sky-500/20 dark:border-gray-600"
-            }`}
+                  ? "border-green-400 focus:border-green-400 focus:ring-green-400/20"
+                  : "border-gray-300 focus:border-sky-500 focus:ring-sky-500/20 dark:border-gray-600"
+              }`}
             {...register("password", {
               required: "Password is required",
               minLength: {
@@ -128,9 +126,9 @@ const LoginForm = () => {
             })}
             disabled={isPending}
           />
-          <PasswordToggle 
-            show={showPassword} 
-            onToggle={() => setShowPassword(!showPassword)} 
+          <PasswordToggle
+            show={showPassword}
+            onToggle={() => setShowPassword(!showPassword)}
           />
         </div>
       </FormRow>

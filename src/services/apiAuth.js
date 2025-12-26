@@ -30,6 +30,15 @@ export async function register({ name, email, password }) {
 }
 
 export async function getCurrentUser() {
+  // Strict check: if no token in localStorage, user is considered logged out
+  const token = localStorage.getItem('token');
+  console.log('🔍 [Auth Check] Checking for token in localStorage:', token ? 'Found ✅' : 'Missing ❌');
+
+  if (!token) {
+    console.log('Auth: No token found, returning null');
+    return null;
+  }
+
   try {
     const response = await apiRequest('/auth/me');
     // Return the user object from the response
@@ -71,7 +80,7 @@ export async function createUser({ name, email, password, avatar }) {
   formData.append('name', name);
   formData.append('email', email);
   formData.append('password', password);
-  
+
   if (avatar) {
     formData.append('avatar', avatar);
   }

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useCreateCertificate } from "./useCreateCertificate";
 import { useUpdateCertificate } from "./useUpdateCertificate";
-import FormRow from "../../ui/FormRow";
+
 import { ColorRing } from "react-loader-spinner";
 
 const CertificateModal = ({ certificateToEdit, onClose }) => {
@@ -30,7 +30,7 @@ const CertificateModal = ({ certificateToEdit, onClose }) => {
     const formData = new FormData();
     formData.append("title", data.title);
     if (data.verificationUrl) formData.append("verificationUrl", data.verificationUrl);
-    
+
     if (data.image && data.image[0]) {
       formData.append("image", data.image[0]);
     }
@@ -55,7 +55,7 @@ const CertificateModal = ({ certificateToEdit, onClose }) => {
           <h2 className="text-2xl font-bold text-gray-800 dark:text-white">
             {certificateToEdit ? "Edit Certificate" : "Add New Certificate"}
           </h2>
-          <button 
+          <button
             onClick={onClose}
             className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-200"
           >
@@ -64,7 +64,7 @@ const CertificateModal = ({ certificateToEdit, onClose }) => {
             </svg>
           </button>
         </div>
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6">
           <div className="space-y-2">
             <label className="text-sm font-semibold uppercase tracking-wider text-gray-500 dark:text-gray-400">

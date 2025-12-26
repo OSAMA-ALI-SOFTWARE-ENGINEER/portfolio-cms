@@ -5,6 +5,7 @@ import UserSvg from "../../ui/UserSvg";
 import BlogBookSvg from "../../ui/BlogBookSvg";
 import WebsiteSvg from "../../ui/WebsiteSvg";
 import SettingsIcon from "../../ui/SettingsIcon";
+import CommentSvg from "../../ui/CommentSvg";
 import { useLogout } from "../logout/useLogout";
 
 const SideBar = () => {
@@ -15,11 +16,11 @@ const SideBar = () => {
   );
 
   return (
-    <aside className="flex flex-col px-6 py-3 text-slate-300 ">
+    <aside className="glass flex h-full flex-col border-r-0 px-6 py-6 text-slate-300">
       <Logo />
       <ul className="  mt-20 flex flex-col gap-4">
         <Link
-          className={` ${location.pathname === "/dashboard" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          className={` ${location.pathname === "/dashboard" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           to={"/dashboard"}
         >
           <svg
@@ -39,21 +40,28 @@ const SideBar = () => {
           <span>home</span>
         </Link>
         <Link
-          className={` ${location.pathname === "/dashboard/manage-blogs" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          className={` ${location.pathname === "/dashboard/manage-blogs" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           to={"/dashboard/manage-blogs"}
         >
           <BlogBookSvg />
           <span>manage blogs</span>
         </Link>
         <Link
-          className={` ${location.pathname === "/dashboard/manage-users" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          className={` ${location.pathname === "/dashboard/manage-comments" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
+          to={"/dashboard/manage-comments"}
+        >
+          <CommentSvg />
+          <span>manage comments</span>
+        </Link>
+        <Link
+          className={` ${location.pathname === "/dashboard/manage-users" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           to={"/dashboard/manage-users"}
         >
           <UserSvg />
           <span>manage users</span>
         </Link>
         <Link
-          className={` ${location.pathname === "/dashboard/manage-certificates" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          className={` ${location.pathname === "/dashboard/manage-certificates" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           to={"/dashboard/manage-certificates"}
         >
           <svg
@@ -76,11 +84,10 @@ const SideBar = () => {
         <div className="flex flex-col gap-2">
           <button
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            className={` ${
-              location.pathname.includes("/dashboard/settings")
-                ? "bg-primary"
-                : "bg-[#333A48]"
-            } flex min-h-[3rem] w-full cursor-pointer items-center justify-between gap-2 rounded-md px-6 font-medium capitalize transition-all duration-200 hover:bg-primary `}
+            className={` ${location.pathname.includes("/dashboard/settings")
+              ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg"
+              : "hover:bg-glassHover text-slate-400"
+              } flex min-h-[3rem] w-full cursor-pointer items-center justify-between gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           >
             <div className="flex items-center gap-2">
               <SettingsIcon />
@@ -92,9 +99,8 @@ const SideBar = () => {
               viewBox="0 0 24 24"
               strokeWidth="1.5"
               stroke="currentColor"
-              className={`h-4 w-4 transition-transform duration-200 ${
-                isSettingsOpen ? "rotate-180" : ""
-              }`}
+              className={`h-4 w-4 transition-transform duration-200 ${isSettingsOpen ? "rotate-180" : ""
+                }`}
             >
               <path
                 strokeLinecap="round"
@@ -103,30 +109,27 @@ const SideBar = () => {
               />
             </svg>
           </button>
-          
+
           {/* Sub-menu */}
           <div
-            className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ${
-              isSettingsOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-            }`}
+            className={`flex flex-col gap-2 overflow-hidden transition-all duration-300 ${isSettingsOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+              }`}
           >
             <Link
-              className={` ${
-                location.pathname === "/dashboard/settings/profile"
-                  ? "text-primary"
-                  : "text-slate-400"
-              } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
+              className={` ${location.pathname === "/dashboard/settings/profile"
+                ? "text-primary"
+                : "text-slate-400"
+                } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
               to={"/dashboard/settings/profile"}
             >
               <UserSvg />
               <span>Profile</span>
             </Link>
             <Link
-              className={` ${
-                location.pathname === "/dashboard/settings/password"
-                  ? "text-primary"
-                  : "text-slate-400"
-              } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
+              className={` ${location.pathname === "/dashboard/settings/password"
+                ? "text-primary"
+                : "text-slate-400"
+                } ml-8 flex min-h-[2.5rem] cursor-pointer items-center gap-2 rounded-md px-4 text-sm font-medium capitalize transition-all duration-200 hover:text-primary `}
               to={"/dashboard/settings/password"}
             >
               <svg
@@ -148,7 +151,7 @@ const SideBar = () => {
           </div>
         </div>
         <Link
-          className={` ${location.pathname === "/" ? "bg-primary" : "bg-[#333A48]"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md  px-6 font-medium capitalize transition-all  duration-200 hover:bg-primary `}
+          className={` ${location.pathname === "/" ? "bg-gradient-to-r from-designColor to-transparent text-white shadow-lg" : "hover:bg-glassHover text-slate-400"} flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl px-6 font-medium capitalize transition-all duration-300 `}
           to={"/"}
           target="_blank"
           rel="noopener noreferrer"
@@ -160,7 +163,7 @@ const SideBar = () => {
       <button
         onClick={logout}
         disabled={isPending}
-        className="mt-auto mb-6 flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-md bg-[#333A48] px-6 font-medium capitalize text-red-400 transition-all duration-200 hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-auto mb-6 flex min-h-[3rem] cursor-pointer items-center gap-2 rounded-xl border border-red-500/20 bg-red-500/10 px-6 font-medium capitalize text-red-400 transition-all duration-300 hover:bg-red-500 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

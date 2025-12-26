@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-// import { motion } from "framer-motion";
+import PageTransition from "../ui/PageTransition";
 import ResumeNavbar from "../component/resume/ResumeNavbar";
 import { Outlet } from "react-router-dom";
 import { useUpdateVisitor } from "../component/visitor/useUpdateVisitor";
@@ -9,9 +9,9 @@ const Resume = () => {
   useEffect(() => {
     updateVisitors("/resume");
   }, [updateVisitors]);
-  
+
   return (
-    <div className="osama min-h-screen bg-gray-300 px-2 font-primary text-gray-500 dark:bg-bodyColor dark:text-gray-300 md:px-6">
+    <PageTransition className="osama min-h-screen bg-gray-300 px-2 font-primary text-gray-500 dark:bg-bodyColor dark:text-gray-300 md:px-6">
       <div className=" py-12 text-center">
         <p className=" mb-4 text-lg uppercase text-designColor opacity-95">
           2+ year of experience
@@ -22,7 +22,7 @@ const Resume = () => {
       </div>
       <ResumeNavbar />
       <Outlet />
-    </div>
+    </PageTransition>
   );
 };
 

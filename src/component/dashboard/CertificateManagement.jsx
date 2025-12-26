@@ -11,25 +11,21 @@ import { getImageUrl } from "../../helper/imageHelper";
 const CertificateManagement = () => {
   const { certificates, isLoading, error } = useCertificates();
   const { deleteCertificate, isDeleting } = useDeleteCertificate();
-  const [isMenuOpen, setIsMenuOpen] = useState(null);
+
   const [editingCertificate, setEditingCertificate] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleMenuToggle = (index) => {
-    setIsMenuOpen(isMenuOpen === index ? null : index);
-  };
+
 
   const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this certificate?")) {
       deleteCertificate(id);
-      setIsMenuOpen(null);
     }
   };
 
   const handleEdit = (cert) => {
     setEditingCertificate(cert);
     setIsModalOpen(true);
-    setIsMenuOpen(null);
   };
 
   const handleAddNew = () => {
@@ -47,8 +43,8 @@ const CertificateManagement = () => {
           <h1 className="text-3xl font-bold text-gray-800 dark:text-white">Certificates</h1>
           <p className="mt-1 text-gray-500 dark:text-gray-400">Manage your professional certifications</p>
         </div>
-        <button 
-          onClick={handleAddNew} 
+        <button
+          onClick={handleAddNew}
           className="flex items-center gap-2 rounded-lg bg-gradient-to-r from-primary to-secondary px-6 py-2.5 text-sm font-medium text-white shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,7 +79,7 @@ const CertificateManagement = () => {
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                
+
                 {/* Overlay Actions */}
                 <div className="absolute bottom-4 right-4 flex gap-2 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
                   <button
@@ -109,7 +105,7 @@ const CertificateManagement = () => {
                 <h3 className="mb-2 truncate text-lg font-bold text-gray-800 dark:text-white" title={cert.title}>
                   {cert.title}
                 </h3>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {cert.verificationUrl ? (
                     <a
@@ -128,7 +124,7 @@ const CertificateManagement = () => {
                       No Link
                     </span>
                   )}
-                  
+
                   {cert.pdf && (
                     <a
                       href={getImageUrl(cert.pdf)}

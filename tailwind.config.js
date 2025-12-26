@@ -10,9 +10,12 @@ module.exports = {
         dashboardBg2: "#1A222C",
         lightText: "#c4cfde",
         designColor: "#ff3131",
-        colorHover:"#5cec2a",
+        colorHover: "#5cec2a",
         boxBg: "linear-gradient(145deg, #1e2024, #23272b)",
         cardBg: "#444e52",
+        glass: "rgba(255, 255, 255, 0.05)",
+        glassBorder: "rgba(255, 255, 255, 0.1)",
+        glassHover: "rgba(255, 255, 255, 0.1)",
       },
       fontFamily: {
         primary: ["Montserrat"],

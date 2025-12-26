@@ -8,6 +8,7 @@ import EditSvg from "../../ui/EditSvg";
 import DeleteSvg from "../../ui/DeleteSvg";
 import EditUserModal from "./EditUserModal";
 import { getImageUrl } from "../../helper/imageHelper";
+import DataTable from "../../ui/dashboard/DataTable";
 
 const UserManagement = () => {
   const { users, isLoading, isError } = useUsers();
@@ -34,108 +35,121 @@ const UserManagement = () => {
   if (isLoading) return <DashboardLoader />;
   if (isError) return <Error />;
 
+  const columns = [
+    {
+      header: "User",
+      accessor: "name",
+      render: (user) => (
+        <div className="flex items-center gap-3">
+          <div className="flex-shrink-0">
+            <img
+              className="h-10 w-10 rounded-full border border-gray-200 object-cover dark:border-gray-700"
+              src={
+                user.avatar && !user.avatar.includes("via.placeholder.com")
+                  ? getImageUrl(user.avatar)
+                  : "https://ui-avatars.com/api/?name=" + user.name
+              }
+              alt={user.name}
+              onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "https://ui-avatars.com/api/?name=" + user.name;
+              }}
+            />
+          </div>
+          <div className="font-semibold text-gray-900 dark:text-white">{user.name}</div>
+        </div>
+      ),
+    },
+    {
+      header: "Email",
+      accessor: "email",
+    },
+    {
+      header: "Role",
+      accessor: "role",
+      render: (user) => (
+        <span
+          className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${user.isAdmin
+            ? "bg-purple-100 text-purple-800 dark:bg-purple-900/30 dark:text-purple-300"
+            : user.role === "editor"
+              ? "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+              : "bg-gray-100 text-gray-800 dark:bg-gray-700/30 dark:text-gray-300"
+            }`}
+        >
+          {user.isAdmin ? "Admin" : user.role === "editor" ? "Editor" : "User"}
+        </span>
+      ),
+    },
+    {
+      header: "Joined at",
+      accessor: "createdAt",
+      render: (user) => dateFormatter(user.createdAt),
+    },
+    {
+      header: "Actions",
+      accessor: "actions",
+      render: (user, index) => (
+        <div className="relative">
+          <button
+            onClick={() => handleMenuToggle(user.id)}
+            className="rounded-full p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+              />
+            </svg>
+          </button>
+
+          {isMenuOpen === user.id && (
+            <div className="glass absolute right-0 top-full z-50 mt-1 w-36 origin-top-right rounded-lg shadow-xl ring-1 ring-black ring-opacity-5 focus:outline-none">
+              <div className="py-1">
+                <button
+                  onClick={() => handleEdit(user)}
+                  className="flex w-full items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-white/10"
+                >
+                  <EditSvg className="mr-3 h-4 w-4" />
+                  Edit
+                </button>
+                <button
+                  onClick={() => handleDelete(user.id)}
+                  disabled={isDeleting || user.isAdmin}
+                  className="flex w-full items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-500/10 disabled:opacity-50"
+                >
+                  <DeleteSvg className="mr-3 h-4 w-4" />
+                  Delete
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="text-sm text-stone-600 dark:text-white">
-      <div className="mb-4 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold">All Users</h1>
+    <div className="space-y-6 p-4">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">All Users</h1>
       </div>
-      <div className="scrollBar-hide">
-        <table className="table-xs table sm:table-md md:table-lg">
-          <thead className="text-stone-400">
-            <tr className="border-gray-200 dark:border-gray-600">
-              <th>User</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Joined at</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {users?.map((user, index) => (
-              <tr
-                key={user.id}
-                className="border-gray-200 duration-300 odd:bg-gray-200 hover:bg-gray-300 dark:border-gray-600 dark:odd:bg-gray-800 dark:hover:bg-gray-500"
-              >
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="avatar">
-                      <div className="mask mask-squircle h-12 w-12">
-                        <img
-                          src={
-                            user.avatar && !user.avatar.includes("via.placeholder.com")
-                              ? getImageUrl(user.avatar)
-                              : "https://ui-avatars.com/api/?name=" + user.name
-                          }
-                          alt={user.name}
-                          className="border border-gray-400 bg-gray-200"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.src = "https://ui-avatars.com/api/?name=" + user.name;
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="font-bold">{user.name}</div>
-                  </div>
-                </td>
-                <td>{user.email}</td>
-                <td>
-                  <span className={`badge ${user.isAdmin ? "badge-primary" : (user.role === 'editor' ? "badge-secondary" : "badge-ghost")}`}>
-                    {user.isAdmin ? "Admin" : (user.role === 'editor' ? "Editor" : "User")}
-                  </span>
-                </td>
-                <td>{dateFormatter(user.createdAt)}</td>
-                <td>
-                  <button
-                    className="text-gray-500 hover:text-gray-700 dark:text-gray-300"
-                    onClick={() => handleMenuToggle(index)}
-                  >
-                    <svg
-                      className="h-6 w-6"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 6v.01M12 12v.01M12 18v.01"
-                      ></path>
-                    </svg>
-                  </button>
-                  {isMenuOpen === index && (
-                    <div className="absolute right-0 w-48 rounded-md border border-gray-200 bg-white text-blue-500 shadow-lg z-50">
-                      <ul>
-                        <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
-                          <button
-                            className="flex items-center gap-2"
-                            onClick={() => handleEdit(user)}
-                          >
-                            <EditSvg />
-                            <span>Edit</span>
-                          </button>
-                        </li>
-                        <li className="cursor-pointer px-4 py-2 hover:bg-gray-100">
-                          <button
-                            disabled={isDeleting || user.isAdmin} // Prevent deleting admins for safety
-                            className="flex items-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            onClick={() => handleDelete(user.id)}
-                          >
-                            <DeleteSvg />
-                            <span>Delete</span>
-                          </button>
-                        </li>
-                      </ul>
-                    </div>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      <div className="w-full">
+        <DataTable
+          columns={columns}
+          data={users}
+          isLoading={isLoading}
+          emptyMessage="No users found."
+        />
       </div>
+
       {editingUser && (
         <EditUserModal
           user={editingUser}

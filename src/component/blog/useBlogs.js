@@ -11,12 +11,12 @@ export function useBlogs() {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["Blogs"],
-    queryFn: () => getBlogs(searchInput),
+    queryKey: ["Blogs", searchInput],
+    queryFn: () => getBlogs(1, 1000, "", searchInput),
   });
   const filterBlogs = Blogs?.filter((blog) =>
     blog.title.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase()) ||
-    blog.keyword.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase())
+      blog.keyword.toLocaleLowerCase().includes(searchInput.toLocaleLowerCase())
       ? blog
       : null,
   );

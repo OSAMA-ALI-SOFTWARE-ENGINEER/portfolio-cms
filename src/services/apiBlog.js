@@ -3,7 +3,7 @@ import { apiRequest, apiFormRequest } from './api';
 // Blog API functions
 export async function createBlog(newBlog) {
   const formData = new FormData();
-  
+
   // Append all blog data to form data
   Object.keys(newBlog).forEach(key => {
     if (newBlog[key] === null || newBlog[key] === undefined) {
@@ -29,7 +29,7 @@ export async function getBlogs(page = 1, limit = 10, category = '', search = '')
     page: page.toString(),
     limit: limit.toString(),
   });
-  
+
   if (category) params.append('category', category);
   if (search) params.append('search', search);
 
@@ -50,7 +50,7 @@ export async function getBlog(id) {
 
 export async function updateBlog(newBlog, id) {
   const formData = new FormData();
-  
+
   // Append all blog data to form data
   Object.keys(newBlog).forEach(key => {
     if (newBlog[key] === null || newBlog[key] === undefined) {
@@ -73,8 +73,36 @@ export async function updateBlog(newBlog, id) {
   return response.data;
 }
 
-export async function deleteBlogById(id) {
-  const response = await apiRequest(`/blogs/${id}`, {
+export async function getAdminBlogs(page = 1, limit = 10, status = 'all', search = '') {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    status: status,
+  });
+
+  if (search) params.append('search', search);
+
+  const response = await apiRequest(`/blogs/admin?${params.toString()}`);
+  return {
+    data: response.data,
+    count: response.count,
+    total: response.total,
+    page: response.page,
+    pages: response.pages
+  };
+}
+
+export async function updateBlogStatus(id, status) {
+  const response = await apiRequest(`/blogs/${id}/status`, {
+    method: 'PUT',
+    body: JSON.stringify({ status })
+  });
+  return response;
+}
+
+export async function deleteBlogById(id, force = false) {
+  const params = force ? '?force=true' : '';
+  const response = await apiRequest(`/blogs/${id}${params}`, {
     method: 'DELETE',
   });
   return response;
