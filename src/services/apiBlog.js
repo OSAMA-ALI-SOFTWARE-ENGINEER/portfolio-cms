@@ -108,6 +108,14 @@ export async function deleteBlogById(id, force = false) {
   return response;
 }
 
+// Duplicate Blog
+export const duplicateBlog = async (id) => {
+  const data = await apiRequest(`/blogs/${id}/duplicate`, {
+    method: 'POST'
+  });
+  return data;
+};
+
 export async function getBlogCategories() {
   const response = await apiRequest('/blogs/categories/list');
   return response.data;

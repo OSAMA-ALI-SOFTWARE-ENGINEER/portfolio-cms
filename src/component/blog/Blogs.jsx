@@ -2,6 +2,7 @@ import React from "react";
 // import CreateBlog from "./CreateBlog";
 import ReadAllBlogs from "./ReadAllBlogs";
 import BlogSidebar from "./BlogSidebar";
+import BlogHero from "./BlogHero";
 // import { useCurrentUser } from "../authentication/useCurrentUser";
 // import { useNavigate, useSearchParams } from "react-router-dom";
 
@@ -26,11 +27,14 @@ const Blogs = () => {
   // };
 
   return (
-    <div className=" grid grid-cols-1 gap-y-12 py-8 font-primary md:grid-cols-[2fr_20rem] md:gap-y-0">
-      <div className=" relative">
-        <ReadAllBlogs />
+    <div className="container mx-auto px-4 py-8 font-primary">
+      <BlogHero />
+      <div className="grid grid-cols-1 gap-y-12 md:grid-cols-[2fr_20rem] md:gap-y-0 md:gap-x-12">
+        <div className="relative">
+          <ReadAllBlogs />
+        </div>
+        <BlogSidebar />
       </div>
-      <BlogSidebar />
     </div>
   );
 };

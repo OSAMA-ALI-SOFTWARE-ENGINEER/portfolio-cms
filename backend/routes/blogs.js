@@ -124,8 +124,8 @@ router.get('/', async (req, res) => {
     const offset = (page - 1) * limit;
 
     // Build query
-    let query = 'SELECT * FROM blogs WHERE isPublished = TRUE';
-    let countQuery = 'SELECT COUNT(*) as total FROM blogs WHERE isPublished = TRUE';
+    let query = "SELECT * FROM blogs WHERE status = 'published'";
+    let countQuery = "SELECT COUNT(*) as total FROM blogs WHERE status = 'published'";
     const params = [];
 
     if (category) {
@@ -307,6 +307,70 @@ router.post('/', protect, canManageBlogs, uploadBlog, handleUploadError, [
       success: false,
       message: 'Server error while creating blog'
     });
+  }
+});
+
+// @desc    Duplicate blog
+// @route   POST /api/blogs/:id/duplicate
+// @access  Private (Admin only)
+router.post('/:id/duplicate', protect, canManageBlogs, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Get original blog
+    const [originalBlog] = await db.query('SELECT * FROM blogs WHERE id = ?', [id]);
+
+    if (!originalBlog) {
+      return res.status(404).json({ success: false, message: 'Blog not found' });
+    }
+
+    // 2. Prepare new data
+    const newTitle = `Copy of ${originalBlog.title}`;
+    const timestamp = Date.now();
+    const newSlug = `${originalBlog.slug}-copy-${timestamp}`;
+
+    // 3. Insert new blog
+    const result = await db.query(
+      `INSERT INTO blogs (
+        title, content, category, author, authorImage, 
+        author_linkdin, linkdin_followers, blogImage, 
+        slug, readTime, isPublished, status
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        newTitle,
+        originalBlog.content,
+        originalBlog.category,
+        originalBlog.author,
+        originalBlog.authorImage,
+        originalBlog.author_linkdin,
+        originalBlog.linkdin_followers,
+        originalBlog.blogImage,
+        newSlug,
+        originalBlog.readTime,
+        0, // isPublished = false
+        'draft' // status = draft
+      ]
+    );
+
+    // 4. Duplicate gallery images if any
+    const galleryImages = await db.query('SELECT image_path FROM blog_gallery WHERE blog_id = ?', [id]);
+
+    if (galleryImages.length > 0) {
+      const newBlogId = result.insertId;
+      await Promise.all(galleryImages.map(img =>
+        db.query('INSERT INTO blog_gallery (blog_id, image_path) VALUES (?, ?)', [newBlogId, img.image_path])
+      ));
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Blog duplicated successfully',
+      data: { id: result.insertId, title: newTitle }
+    });
+
+  } catch (error) {
+    console.error('Duplicate blog error:', error);
+    res.status(500).json({ success: false, message: 'Server error while duplicating blog' });
   }
 });
 
